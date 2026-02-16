@@ -4,7 +4,6 @@ import CourseCard from "./CourseCard";
 import { useGetCourseData } from "../Hooks";
 const ProductGrid = () => {
   const courseData=useGetCourseData();
-  console.log(courseData)
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <h2 className="text-2xl font-bold text-gray-800 mb-6">Explore Courses</h2>

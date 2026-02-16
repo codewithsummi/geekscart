@@ -1,9 +1,14 @@
 import React from "react";
 import Navbar from "../Components/Navbar";
 import { Trash2, ShoppingBag } from "lucide-react";
-
+import { useDispatch, useSelector } from "react-redux";
+import { removeFromCart } from "../Store/appSlice";
 
 const Cart = () => {
+  const cartData=useSelector(state=> state.app.cart);
+  const dispatch=useDispatch();
+  const cartItems=Object.values(cartData);
+  const totalPrice=cartItems.reduce((acc,item)=> acc+item.price,0)
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
@@ -13,60 +18,60 @@ const Cart = () => {
           <ShoppingBag /> Shopping Cart
         </h1>
 
-       
+       {cartItems.length === 0 ? 
           <div className="text-center py-20 bg-white rounded-lg border border-dashed border-gray-300">
             <p className="text-gray-500 text-lg">Your cart is empty.</p>
           </div>
-       
+          :
           <div className="grid lg:grid-cols-3 gap-10">
             {/* Left: Item List */}
             <div className="lg:col-span-2 space-y-4">
-              
+              {cartItems.map((item)=>
                 <div
-                  
+                  key={item.id}
                   className="flex gap-4 bg-white p-4 rounded-lg border border-gray-200 shadow-sm"
                 >
                   <img
-                    src="#"
-                    alt="#"
+                    src={item.image}
+                    alt={item.title}
                     className="w-24 h-24 md:w-32 md:h-20 object-cover rounded"
                   />
 
                   <div className="flex-1">
                     <h3 className="font-bold text-gray-900 leading-tight">
-                     title
+                     {item.title}
                     </h3>
                     <p className="text-sm text-gray-500">
-                      By instructor
+                      By {item.instructor}
                     </p>
                     <div className="mt-2 flex items-center gap-4 text-sm font-bold text-blue-600">
-                      <span>rating ★</span>
+                      <span>{item.rating} ★</span>
                       <span className="text-gray-400 font-normal">
-                        category
+                        {item.category}
                       </span>
                     </div>
                   </div>
 
                   <div className="flex flex-col items-end justify-between">
                     <span className="text-lg font-bold text-gray-900">
-                      ₹price
+                      ${item.price}
                     </span>
                     <button
-                     
+                    onClick={()=> dispatch(removeFromCart({id:item.id}))}
                       className="text-red-500 hover:bg-red-50 p-2 rounded-full transition-colors"
                     >
                       <Trash2 size={20} />
                     </button>
                   </div>
                 </div>
-             
+              )}
             </div>
 
             
             <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm h-fit">
               <h2 className="text-xl font-bold mb-4 text-gray-800">Total:</h2>
               <div className="text-4xl font-bold mb-6 text-gray-900">
-                ₹ 45678
+                ₹ {totalPrice}
               </div>
 
               <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors mb-4">
@@ -90,7 +95,7 @@ const Cart = () => {
               </div>
             </div>
           </div>
-       
+        }
       </div>
     </div>
   );

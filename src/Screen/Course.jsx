@@ -10,21 +10,25 @@ import {
   Heart,
   ShoppingCart,
 } from "lucide-react";
-import { useGetCourseData } from "../Hooks";
+import { useGetCourseData, useIsProductInCart } from "../Hooks";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart, removeFromCart } from "../Store/appSlice";
 
 const Course = () => {
   const { id} = useParams();
-
-  
-  const [courseData,setCourseData]=useState(null)
-  useEffect(()=>{
-        const courseData1=useGetCourseData();
-        console.log(courseData1)
-      // const courseD=courseData1.find((data)=> data.id == id)
-      // setCourseData(courseD)
-      // console.log(courseD)
-      //  console.log(courseData)
-  },[id])
+  const dispatch=useDispatch();
+  const cartData=useSelector(state=> state.app.cart)
+  const allCourseData=useGetCourseData();
+  const courseData=allCourseData.find(data=> data.id == id);
+  const isCourseInCart=useIsProductInCart(id);
+  const handleAddToCart=(courseData)=>{
+      if(isCourseInCart){
+         dispatch(removeFromCart(courseData))
+      }
+      else{
+        dispatch(addToCart(courseData))
+      }
+  }
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
@@ -76,15 +80,17 @@ const Course = () => {
               alt="Thumbnail"
               className="w-full rounded-lg mb-4"
             />
-            <div className="text-3xl font-bold mb-4">₹{courseData.price}</div>
+            <div className="text-3xl font-bold mb-4">${courseData.price}</div>
 
             <div className="flex flex-col gap-3">
               <button
-                
+                onClick={()=>{
+                  handleAddToCart(courseData)
+                }}
                 className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-blue-700"
               >
                 <ShoppingCart size={20} />{" "}
-               Add to Cart
+              {isCourseInCart ?"Remove from Cart" : "Add to Cart"}
               </button>
               <button
                
