@@ -11,4 +11,5 @@ function useGetCourseData(){
     },[])
     return courseData;
 }
+
 export {useGetCourseData}

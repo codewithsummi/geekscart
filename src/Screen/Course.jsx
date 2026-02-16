@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../Components/Navbar";
 
 import { useParams } from "react-router-dom";
@@ -10,15 +10,21 @@ import {
   Heart,
   ShoppingCart,
 } from "lucide-react";
+import { useGetCourseData } from "../Hooks";
 
 const Course = () => {
-  const { id: courseId } = useParams();
+  const { id} = useParams();
 
   
-
-
-  
-
+  const [courseData,setCourseData]=useState(null)
+  useEffect(()=>{
+        const courseData1=useGetCourseData();
+        console.log(courseData1)
+      // const courseD=courseData1.find((data)=> data.id == id)
+      // setCourseData(courseD)
+      // console.log(courseD)
+      //  console.log(courseData)
+  },[id])
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
@@ -29,10 +35,10 @@ const Course = () => {
           {/* Left Side: Course Info */}
           <div className="md:col-span-2">
             <h1 className="text-3xl md:text-4xl font-bold mb-4">
-              Title
+              {courseData.title}
             </h1>
             <p className="text-lg mb-4 text-gray-300">
-              Description
+              {courseData.description}
             </p>
 
             <div className="flex flex-wrap items-center gap-4 text-sm mb-4">
@@ -41,12 +47,12 @@ const Course = () => {
                 <Star size={16} fill="currentColor" />
               </div>
               <span className="text-blue-400 font-medium">
-                (12 students)
+                ({courseData.studentsEnrolled} students)
               </span>
               <span>
                 Created by{" "}
                 <span className="underline text-blue-300">
-                 instructor
+                 {courseData.instructor}
                 </span>
               </span>
             </div>
@@ -54,11 +60,11 @@ const Course = () => {
             <div className="flex flex-wrap gap-4 text-sm">
               <div className="flex items-center gap-1">
                 <Calendar size={16} />
-                <span>Last updated </span>
+                <span>Last updated {courseData.lastUpdated} </span>
               </div>
               <div className="flex items-center gap-1">
                 <Globe size={16} />
-                <span>Language</span>
+                <span>{courseData.language}</span>
               </div>
             </div>
           </div>
@@ -66,11 +72,11 @@ const Course = () => {
           {/* Right Side: Action Box (Floating Card style) */}
           <div className="bg-white text-gray-900 p-6 rounded-xl border border-gray-200 shadow-xl self-start">
             <img
-              src="#"
+              src={courseData.image}
               alt="Thumbnail"
               className="w-full rounded-lg mb-4"
             />
-            <div className="text-3xl font-bold mb-4">₹234</div>
+            <div className="text-3xl font-bold mb-4">₹{courseData.price}</div>
 
             <div className="flex flex-col gap-3">
               <button
